@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rewrite Date Generator</title>
+	<meta charset="utf-8">
+	<style>
+		html {
+			background-color: #FFF;
+			font-family: "MS Gothic", "Tahoma", "Arial", sans-serif;
+			color: #333;
+			padding: 10vh 30vw;
+		}
+
+		h1 {
+			font-size: 2.5em;
+			border-bottom: 1px solid #AAA;
+		}
+
+		p {
+			font-size: 1.15em;
+		}
+
+		hr {
+			border: none;
+			background: #AAA;
+			height: 1px;
+		}
+
+		label {
+			display: inline-block;
+			padding: 5px;
+			width: 120px;
+			background-color: #CCC;
+			color: #444;
+			font-size: 1.15em;
+			margin-bottom: 2px;
+		}
+
+		input {
+			width: calc(100% - 142px);
+			padding: 4px;
+			margin-left: 2px;
+			background-color: #DDD;
+			border: 1px solid #CCC;
+			color: #333;
+			font-family: "MS Gothic", "Tahoma", "Arial", sans-serif;
+			font-size: 1.15em;
+		}
+
+		canvas {
+			display: block;
+			margin: 0 auto;
+			cursor: pointer;
+		}
+
+		#logo {
+			width: 50px;
+			filter: invert(20%);
+			margin: 0 auto;
+			display: block;
+			margin-top: 1em;
+		}
+	</style>
+	<script>
+		let bgimg;
+		let font;
+
+		function updateCanvas() {
+			const ctx = document.getElementById('output').getContext('2d');
+
+			ctx.drawImage(bgimg, 0, 0);
+			const offset = drawText(ctx, document.getElementById('title').value, 28, 94, 76);
+			drawText(ctx, document.getElementById('subtitle').value, 28 + offset + 26, 88, 54);
+			drawText(ctx, document.getElementById('caption').value, 28 + 20, 126, 28);
+		}
+
+		function drawText(ctx, body, x, y, size) {
+			ctx.font = `italic ${ size }px BKANTIQUA`
+			ctx.strokeStyle = 'white';
+			ctx.lineWidth = 3;
+			ctx.lineJoin = 'miter';
+			ctx.miterLimit = 2;
+			ctx.strokeText(body, x, y);
+			ctx.fillStyle = '#214C64';
+			ctx.fillText(body, x, y);
+
+			return ctx.measureText(body).width;
+		}
+
+		function loadFont() {
+			font = new FontFace('BKANTIQUA', 'url(ANTQUAI.TTF)', {
+				style: 'italic',
+				weight: 500
+			});
+
+			font.load().then(() => {
+				document.fonts.add(font);
+				updateCanvas();
+			});
+		}
+
+		const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		const lazyNums = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th", "th", "st"];
+		function resetInputs() {
+			const d = new Date();
+
+			document.getElementById('title').value = months[d.getMonth()] + ' ' + d.getDate() + lazyNums[d.getDate()];
+			document.getElementById('subtitle').value = '(' + days[d.getDay()] + ')';
+			document.getElementById('caption').value = '';
+		}
+
+		window.addEventListener('DOMContentLoaded', () => {
+			resetInputs();
+
+			bgimg = new Image();
+			bgimg.onload = loadFont;
+			bgimg.src = 'bg.png';
+
+			document.getElementById('title').addEventListener('keyup', updateCanvas);
+			document.getElementById('subtitle').addEventListener('keyup', updateCanvas);
+			document.getElementById('caption').addEventListener('keyup', updateCanvas);
+
+			document.getElementById('output').addEventListener('click', () => {
+				const link = document.createElement('a');
+				let new_e;
+
+			    link.download = 'rewritedategen.png';
+			    link.href = document.getElementById('output').toDataURL();
+
+			    e = document.createEvent('MouseEvents');
+		        e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		        link.dispatchEvent(e);
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Rewrite Date Generator</h1>
+	<p>This tiny tool generates date displays like those inbetween Rewrite scenes. Enter text into the boxes, then click the generated image to download it.</p>
+	<hr>
+	<canvas id="output" width="500" height="150"></canvas><br>
+	<label>Title</label><input id="title" autocomplete="off" value="">
+	<label>Subtitle</label><input id="subtitle" autocomplete="off" value="">
+	<label>Caption</label><input id="caption" autocomplete="off" value="">
+	<hr>
+	<a href="https://osk.sh/"><img src="osk.svg" id="logo"></a>
+</body>
+</html>
