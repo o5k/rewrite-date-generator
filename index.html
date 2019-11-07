@@ -60,6 +60,11 @@
 			display: block;
 			margin-top: 1em;
 		}
+
+		p a {
+			color: inherit;
+			text-decoration: underline dotted;
+		}
 	</style>
 	<script>
 		let bgimg;
@@ -137,7 +142,7 @@
 </head>
 <body>
 	<h1>Rewrite Date Generator</h1>
-	<p>This tiny tool generates date displays like those inbetween Rewrite scenes. Enter text into the boxes, then click the generated image to download it.</p>
+	<p>This <a href="https://github.com/o5k/rewrite-date-generator">tiny open-source tool</a> generates date displays like those inbetween Rewrite scenes. Enter text into the boxes, then click the generated image to download it.</p>
 	<hr>
 	<canvas id="output" width="500" height="150"></canvas><br>
 	<label>Title</label><input id="title" autocomplete="off" value="">
